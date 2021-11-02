@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+  <button id="clear">Clear</button>
+  <!-- <button id="undo">Undo</button> -->
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+  // class Stack{
+
+  //   constructor(){
+  //     this.items = []
+  //   }
+  //   push(element){
+  //     this.items.push(element); 
+  //   }
+  //   pop(){
+  //     if(this.items.length===0)
+  //     {
+  //       return "Underflow";
+  //     }
+  //     this.items.pop();
+  //   }
+  //   isEmpty(){
+  //     if(this.items.length===0){
+  //       return true;
+  //     }
+  //     else return false;
+  //   }
+  //   size(){
+  //     return this.items.length;
+  //   }
+  //   peek(){
+  //     if(this.size()==0){
+  //       return "Underflow";
+  //     }
+  //     else return this.items[this.size()-1];
+  //   }
+
+  // }
+
+  const canvas = document.querySelector("#draw");
+  const ctx = canvas.getContext('2d');
+  const clearbtn = document.querySelector("#clear");
+  const undobtn = document.querySelector("#undo");
+
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  
+  ctx.lineJoin = 'milet';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 50;
+
+  let isDrawing = false;
+  let lastX=0;
+  let lastY=0;
+  let [firstX,firstY]=[0,0];
+  let hue=360;
+ // let st = new Stack();
+  console.log(firstX,firstY);
+  
+
+  function Draw(e){
+   
+    if(!isDrawing) return;
+
+    //console.log(e);
+    ctx.strokeStyle = `hsl(${hue},100%,50%)`;
+    ctx.beginPath();
+    ctx.moveTo(lastX,lastY);
+    ctx.lineTo(e.offsetX,e.offsetY);
+    ctx.stroke();
+
+    [firstX, firstY] = [lastX, lastY];
+    [lastX, lastY] = [e.offsetX,e.offsetY]; 
+    hue++;
+
+    // st.push(lastX);
+    // st.push(lastY);
+    // st.push(firstX);
+    // st.push(firstY);
+
+    if(hue>=360){
+      hue=0;
+    }
+
+  }
+  function clear(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+
+  canvas.addEventListener("mousemove", Draw);
+  canvas.addEventListener("mousedown",(e)=> {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX,e.offsetY];
+  });
+  canvas.addEventListener("mouseup",()=>isDrawing=false);
+  canvas.addEventListener("mouseout", ()=>isDrawing=false);
+  clearbtn.addEventListener("click",clear);
+ // undobtn.addEventListener("click",undo);
+
+  
+
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+  #clear{
+    background: #ddd;
+    color:#fff;
+    width:10rem;
+    height:3rem;
+    font-size:2rem;
+  }
+</style>
+
+
+</body>
+</html>
